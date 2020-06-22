@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: client
+  devtools:
+    restart:
+      enabled: false  #设置开启热部署
+    thymeleaf:
+      cache: false
+      ##读取静态页面路径前缀
+      prefix: classpath:/templates/
+      ##读取静态页面路径后缀
+      suffix: .html
+
+eureka:
+  instance:
+    hostname: client
+    prefer-ip-address: true
+    #instance-id: 127.0.0.1
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8081/eureka/
+    healthcheck:
+      enabled: true
+server:
+#  port: 8085
+   port: 8082
+ribbon:
+  eager-load:
+    enabled: true
+    clients:
+      - client
+feign:
+  client:
+    config:
+      default:
+        logger-level: none # basic 只记录请求方法和URL以及响应状态代码和执行时间。
+                           # headers 记录基本信息以及请求和响应标头
+                           # full 记录请求和响应的头文件，正文和元数据
+logging:
+  level:
+    com.fth.client: debug

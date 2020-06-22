@@ -1,0 +1,75 @@
+server:
+  port: 9001
+spring:
+  application:
+    name: zuul
+  security:
+    user:
+      name: root
+      password: root
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8081/eureka/
+  instance:
+    hostname: zuul
+    instance-id: zuul
+
+##配置负载均衡
+#client:  ##服务名
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule #随机策略
+
+ribbon:
+  ReadTimeout: 3000
+  ConnectTimeout: 3000
+  eureka:
+    enabled: false
+
+# 路由端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+    routes:
+      enabled: true
+# 配置指定微服务的访问路径
+zuul:
+  sensitive-headers: token
+  routes:
+    client-zuul:
+      path: /client-zuul/**
+      service-id: client-zuul-config
+    service-zuul:
+      path: /service-zuul/**
+      service-id: service-zuul-config
+  ignored-services:
+    - client
+    - service
+# url 前缀
+#  prefix: /api
+# 是否移除前缀
+  strip-prefix: true
+# 一下配置，表示忽略下面的值向微服务传播，以下配置为空表示：所有请求头都透传到后面微服务。
+# 忽略正则，不能通过 zuul-api-driver 和 api-driver访问。
+#  ignored-patterns:
+#   - /client-*/**
+
+client-zuul-config:
+  ribbon:
+    # ,localhost:8085
+    listOfServers: localhost:8082
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule #随机策略
+service-zuul-config:
+  ribbon:
+    listOfServers: localhost:8083
+
+#logging:
+#  level:
+#    com.netflix: debug
+#    org.springframework: DEBUG

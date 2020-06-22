@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: turbine
+#  devtools:
+#    restart:
+#      enabled: true #设置开启热部署
+#  thymeleaf:
+#    cache: false
+eureka:
+  instance:
+    hostname: turbine
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8081/eureka/
+server:
+  port: 8086
+turbine:
+  app-config: service,client
+  cluster-name-expression: "'default'"
